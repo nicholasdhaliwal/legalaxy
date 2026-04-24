@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,486 +8,464 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  :root {
-    --bg-primary: #0d0d0d;
-    --bg-secondary: #141414;
-    --bg-tertiary: #1c1c1c;
-    --bg-elevated: #222222;
-    --border: #2a2a2a;
-    --border-subtle: #1f1f1f;
-    --text-primary: #e8e8e8;
-    --text-secondary: #888888;
-    --text-muted: #444444;
-    --accent: #4a90d9;
-    --accent-hover: #5a9fe8;
-    --accent-dim: rgba(74, 144, 217, 0.125);
-    --danger: #c0392b;
-    --danger-hover: #e74c3c;
-    --node-layer-1: #4a90d9;
-    --node-layer-2: #5dade2;
-    --node-layer-3: #76d7c4;
-    --node-layer-4: #a9cce3;
-  }
+/* ── DARK MODE (default) ─────────────────────────────────────── */
+:root {
+  --bg-primary: #0d0d0d;
+  --bg-secondary: #141414;
+  --bg-tertiary: #1c1c1c;
+  --bg-elevated: #222222;
+  --border: #2a2a2a;
+  --border-subtle: #1f1f1f;
+  --text-primary: #e8e8e8;
+  --text-secondary: #888888;
+  --text-muted: #444444;
+  --accent: #4a90d9;
+  --accent-hover: #5a9fe8;
+  --accent-dim: rgba(74,144,217,0.12);
+  --danger: #c0392b;
+  --danger-hover: #e74c3c;
+  --node-l1: #4a90d9;
+  --node-l2: #5dade2;
+  --node-l3: #76d7c4;
+  --node-l4: #a9cce3;
+  --node-l5: #c8b4e0;
+  --edge-color: #333333;
+  --graph-bg: #0d0d0d;
+  --graph-font: #e8e8e8;
+}
 
-  html, body {
-    height: 100%;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    font-size: 14px;
-    font-weight: 400;
-    color: var(--text-primary);
-    background: var(--bg-primary);
-    -webkit-font-smoothing: antialiased;
-  }
+/* ── LIGHT MODE ──────────────────────────────────────────────── */
+[data-theme="light"] {
+  --bg-primary: #f7f7f7;
+  --bg-secondary: #eeeeee;
+  --bg-tertiary: #e4e4e4;
+  --bg-elevated: #dcdcdc;
+  --border: #cccccc;
+  --border-subtle: #d8d8d8;
+  --text-primary: #1a1a1a;
+  --text-secondary: #555555;
+  --text-muted: #999999;
+  --accent: #2563eb;
+  --accent-hover: #1d4ed8;
+  --accent-dim: rgba(37,99,235,0.1);
+  --danger: #dc2626;
+  --danger-hover: #b91c1c;
+  --node-l1: #1d4ed8;
+  --node-l2: #0369a1;
+  --node-l3: #047857;
+  --node-l4: #6d28d9;
+  --node-l5: #be185d;
+  --edge-color: #bbbbbb;
+  --graph-bg: #f7f7f7;
+  --graph-font: #1a1a1a;
+}
 
-  #app {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-  }
+html, body {
+  height: 100%;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--text-primary);
+  background: var(--bg-primary);
+  -webkit-font-smoothing: antialiased;
+}
 
-  /* NAV */
-  nav {
-    height: 48px;
-    background: var(--bg-secondary);
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    padding: 0 24px;
-    gap: 32px;
-    flex-shrink: 0;
-  }
+#app { display: flex; flex-direction: column; height: 100vh; }
 
-  .nav-brand {
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--text-primary);
-    letter-spacing: 0.04em;
-    margin-right: 16px;
-  }
+/* ── NAV ──────────────────────────────────────────────────────── */
+nav {
+  height: 48px;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  gap: 32px;
+  flex-shrink: 0;
+}
 
-  .nav-item {
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--text-secondary);
-    cursor: pointer;
-    padding-bottom: 2px;
-    border-bottom: 2px solid transparent;
-    transition: color 150ms ease, border-color 150ms ease;
-    user-select: none;
-  }
+.nav-brand {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary);
+  letter-spacing: 0.04em;
+  margin-right: 8px;
+}
 
-  .nav-item:hover { color: var(--text-primary); }
-  .nav-item.active { color: var(--accent); border-bottom-color: var(--accent); }
+.nav-item {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding-bottom: 2px;
+  border-bottom: 2px solid transparent;
+  transition: color 150ms ease, border-color 150ms ease;
+  user-select: none;
+}
+.nav-item:hover { color: var(--text-primary); }
+.nav-item.active { color: var(--accent); border-bottom-color: var(--accent); }
 
-  /* VIEWS */
-  .view { display: none; flex: 1; overflow: hidden; }
-  .view.active { display: flex; }
+.nav-spacer { flex: 1; }
 
-  /* GRAPH VIEW */
-  #view-graph { position: relative; }
+#theme-toggle {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 5px 12px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: color 150ms ease, border-color 150ms ease;
+}
+#theme-toggle:hover { color: var(--text-primary); border-color: var(--text-muted); }
 
-  #graph-canvas {
-    flex: 1;
-    background: var(--bg-primary);
-  }
+/* ── VIEWS ───────────────────────────────────────────────────── */
+.view { display: none; flex: 1; overflow: hidden; }
+.view.active { display: flex; }
 
-  #graph-controls {
-    position: absolute;
-    top: 16px;
-    left: 16px;
-    display: flex;
-    gap: 8px;
-    flex-direction: column;
-  }
+/* ── GRAPH VIEW ──────────────────────────────────────────────── */
+#view-graph { position: relative; }
 
-  .ctrl-group {
-    display: flex;
-    gap: 6px;
-  }
+#graph-canvas {
+  flex: 1;
+  background: var(--graph-bg);
+  transition: background 150ms ease;
+}
 
-  .ctrl-btn {
-    background: var(--bg-secondary);
-    border: 1px solid var(--border);
-    color: var(--text-secondary);
-    font-family: inherit;
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    padding: 6px 12px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: color 150ms ease, border-color 150ms ease;
-  }
+#graph-controls {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
 
-  .ctrl-btn:hover { color: var(--text-primary); border-color: var(--text-muted); }
-  .ctrl-btn.active { color: var(--accent); border-color: var(--accent); }
+.ctrl-group { display: flex; gap: 6px; align-items: center; }
 
-  .layer-filter-label {
-    font-size: 11px;
-    color: var(--text-muted);
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    align-self: center;
-  }
+.ctrl-btn {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: color 150ms ease, border-color 150ms ease, background 150ms ease;
+}
+.ctrl-btn:hover { color: var(--text-primary); border-color: var(--text-muted); }
+.ctrl-btn.active { color: var(--accent); border-color: var(--accent); background: var(--accent-dim); }
+.ctrl-btn.inactive { color: var(--text-muted); border-color: var(--border-subtle); }
 
-  #graph-sidebar {
-    width: 280px;
-    flex-shrink: 0;
-    background: var(--bg-secondary);
-    border-left: 1px solid var(--border);
-    padding: 20px;
-    display: none;
-    overflow-y: auto;
-  }
+.ctrl-label {
+  font-size: 10px;
+  color: var(--text-muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
 
-  #graph-sidebar.open { display: block; }
+.layer-legend {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
 
-  .sidebar-close {
-    float: right;
-    background: none;
-    border: none;
-    color: var(--text-muted);
-    font-size: 16px;
-    cursor: pointer;
-    line-height: 1;
-    padding: 0;
-    transition: color 150ms ease;
-  }
-  .sidebar-close:hover { color: var(--text-primary); }
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--text-secondary);
+}
 
-  .sidebar-title {
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--text-primary);
-    margin-bottom: 20px;
-    padding-right: 24px;
-    word-break: break-word;
-  }
+.legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
 
-  .meta-pair {
-    margin-bottom: 12px;
-  }
+/* ── SIDEBAR ─────────────────────────────────────────────────── */
+#graph-sidebar {
+  width: 280px;
+  flex-shrink: 0;
+  background: var(--bg-secondary);
+  border-left: 1px solid var(--border);
+  padding: 20px;
+  display: none;
+  overflow-y: auto;
+}
+#graph-sidebar.open { display: block; }
 
-  .meta-label {
-    font-size: 11px;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    margin-bottom: 2px;
-  }
+.sidebar-close {
+  float: right;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 16px;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+  transition: color 150ms ease;
+}
+.sidebar-close:hover { color: var(--text-primary); }
 
-  .meta-value {
-    font-size: 13px;
-    color: var(--text-primary);
-    word-break: break-word;
-  }
+.sidebar-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 20px;
+  padding-right: 24px;
+  word-break: break-word;
+}
 
-  .meta-value.empty { color: var(--text-muted); font-style: italic; }
+.meta-pair { margin-bottom: 12px; }
+.meta-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 2px;
+}
+.meta-value { font-size: 13px; color: var(--text-primary); word-break: break-word; }
+.meta-value.empty { color: var(--text-muted); font-style: italic; }
 
-  /* FORM VIEWS */
-  #view-add-node, #view-add-edge {
-    overflow-y: auto;
-    justify-content: flex-start;
-  }
+/* ── FORM VIEWS ──────────────────────────────────────────────── */
+#view-add-node, #view-add-edge { overflow-y: auto; justify-content: flex-start; }
 
-  .form-wrap {
-    max-width: 560px;
-    width: 100%;
-    margin: 0 auto;
-    padding: 48px 24px;
-  }
+.form-wrap {
+  max-width: 560px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 48px 24px;
+}
 
-  .form-section-header {
-    font-size: 13px;
-    color: var(--text-secondary);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    margin-bottom: 24px;
-  }
+.form-section-header {
+  font-size: 13px;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 24px;
+}
 
-  .field {
-    margin-bottom: 20px;
-  }
+.field { margin-bottom: 20px; }
 
-  .field label {
-    display: block;
-    font-size: 11px;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    margin-bottom: 6px;
-  }
+.field label {
+  display: block;
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 6px;
+}
 
-  .field input,
-  .field select,
-  .field textarea {
-    width: 100%;
-    background: var(--bg-tertiary);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 10px 12px;
-    font-family: inherit;
-    font-size: 13px;
-    color: var(--text-primary);
-    outline: none;
-    transition: border-color 150ms ease;
-    appearance: none;
-  }
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 10px 12px;
+  font-family: inherit;
+  font-size: 13px;
+  color: var(--text-primary);
+  outline: none;
+  transition: border-color 150ms ease;
+  appearance: none;
+}
+.field input:focus,
+.field select:focus,
+.field textarea:focus { border-color: var(--accent); }
+.field textarea { min-height: 80px; resize: vertical; }
+.field select option { background: var(--bg-tertiary); color: var(--text-primary); }
 
-  .field input:focus,
-  .field select:focus,
-  .field textarea:focus {
-    border-color: var(--accent);
-  }
+.submit-btn {
+  background: var(--accent);
+  color: white;
+  border: none;
+  padding: 10px 24px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 32px;
+  transition: background 150ms ease;
+}
+.submit-btn:hover { background: var(--accent-hover); }
+.submit-btn:disabled { opacity: 0.5; cursor: default; }
 
-  .field textarea {
-    min-height: 80px;
-    resize: vertical;
-  }
+.form-status { font-size: 13px; margin-top: 12px; min-height: 20px; }
+.form-status.success { color: var(--accent); }
+.form-status.error { color: var(--danger); }
 
-  .field select option {
-    background: var(--bg-tertiary);
-    color: var(--text-primary);
-  }
+/* ── TABLE VIEW ──────────────────────────────────────────────── */
+#view-table { flex-direction: column; overflow: hidden; }
 
-  .submit-btn {
-    background: var(--accent);
-    color: white;
-    border: none;
-    padding: 10px 24px;
-    font-family: inherit;
-    font-size: 13px;
-    font-weight: 500;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-top: 32px;
-    transition: background 150ms ease;
-  }
+.table-header {
+  display: flex;
+  align-items: flex-end;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-primary);
+  flex-shrink: 0;
+}
 
-  .submit-btn:hover { background: var(--accent-hover); }
-  .submit-btn:disabled { opacity: 0.5; cursor: default; }
+.subtab-btn {
+  font-size: 12px;
+  color: var(--text-muted);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: color 150ms ease, border-color 150ms ease;
+  font-family: inherit;
+}
+.subtab-btn.active { color: var(--text-primary); border-bottom-color: var(--accent); }
 
-  .form-status {
-    font-size: 13px;
-    margin-top: 12px;
-    min-height: 20px;
-  }
+.table-scroll { flex: 1; overflow-y: auto; }
 
-  .form-status.success { color: var(--accent); }
-  .form-status.error { color: var(--danger); }
+table { width: 100%; border-collapse: collapse; }
 
-  /* TABLE VIEW */
-  #view-table {
-    flex-direction: column;
-    overflow: hidden;
-  }
+thead tr { background: var(--bg-secondary); border-bottom: 1px solid var(--border); }
+thead th {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  height: 40px;
+  padding: 0 16px;
+  text-align: left;
+  white-space: nowrap;
+}
 
-  .table-header {
-    display: flex;
-    align-items: flex-end;
-    gap: 24px;
-    padding: 0 0 0 0;
-    border-bottom: 1px solid var(--border);
-    background: var(--bg-primary);
-    flex-shrink: 0;
-  }
+tbody tr { background: var(--bg-primary); border-bottom: 1px solid var(--border-subtle); transition: background 150ms ease; }
+tbody tr:hover { background: var(--bg-tertiary); }
+tbody td { font-size: 13px; color: var(--text-primary); height: 44px; padding: 0 16px; white-space: nowrap; }
+td.truncate { max-width: 280px; overflow: hidden; text-overflow: ellipsis; }
 
-  .subtab-btn {
-    font-size: 12px;
-    font-weight: 400;
-    color: var(--text-muted);
-    background: none;
-    border: none;
-    border-bottom: 2px solid transparent;
-    padding: 12px 16px;
-    cursor: pointer;
-    transition: color 150ms ease, border-color 150ms ease;
-    font-family: inherit;
-  }
+.tbl-edit-btn {
+  font-size: 11px;
+  color: var(--text-secondary);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  padding: 0;
+  transition: color 150ms ease;
+}
+.tbl-edit-btn:hover { color: var(--text-primary); text-decoration: underline; }
 
-  .subtab-btn.active {
-    color: var(--text-primary);
-    border-bottom-color: var(--accent);
-  }
+.tbl-delete-btn {
+  font-size: 11px;
+  color: var(--text-secondary);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  padding: 0 0 0 12px;
+  transition: color 150ms ease;
+}
+.tbl-delete-btn:hover { color: var(--danger); }
 
-  .table-scroll {
-    flex: 1;
-    overflow-y: auto;
-  }
+/* ── MODAL ───────────────────────────────────────────────────── */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.65);
+  z-index: 100;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 48px;
+  overflow-y: auto;
+}
+.modal-overlay.open { display: flex; }
 
-  table {
-    width: 100%;
-    border-collapse: collapse;
-  }
+.modal {
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  width: 100%;
+  max-width: 560px;
+  padding: 32px;
+  margin-bottom: 48px;
+}
 
-  thead tr {
-    background: var(--bg-secondary);
-    border-bottom: 1px solid var(--border);
-  }
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+.modal-title { font-size: 13px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.08em; }
+.modal-close {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 18px;
+  cursor: pointer;
+  font-family: inherit;
+  line-height: 1;
+  transition: color 150ms ease;
+}
+.modal-close:hover { color: var(--text-primary); }
 
-  thead th {
-    font-size: 11px;
-    font-weight: 500;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    height: 40px;
-    padding: 0 16px;
-    text-align: left;
-    white-space: nowrap;
-  }
+/* ── SEARCHABLE SELECT ───────────────────────────────────────── */
+.searchable-select { position: relative; }
+.ss-dropdown {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-top: none;
+  max-height: 180px;
+  overflow-y: auto;
+  z-index: 50;
+}
+.ss-dropdown.open { display: block; }
+.ss-option {
+  padding: 8px 12px;
+  font-size: 13px;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: background 150ms ease;
+}
+.ss-option:hover { background: var(--bg-tertiary); }
 
-  tbody tr {
-    background: var(--bg-primary);
-    border-bottom: 1px solid var(--border-subtle);
-    transition: background 150ms ease;
-  }
-
-  tbody tr:hover { background: var(--bg-tertiary); }
-
-  tbody td {
-    font-size: 13px;
-    color: var(--text-primary);
-    height: 44px;
-    padding: 0 16px;
-    white-space: nowrap;
-  }
-
-  td.truncate {
-    max-width: 320px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .tbl-edit-btn {
-    font-size: 11px;
-    color: var(--text-secondary);
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-family: inherit;
-    padding: 0;
-    transition: color 150ms ease;
-  }
-  .tbl-edit-btn:hover { color: var(--text-primary); text-decoration: underline; }
-
-  .tbl-delete-btn {
-    font-size: 11px;
-    color: var(--text-secondary);
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-family: inherit;
-    padding: 0 0 0 12px;
-    transition: color 150ms ease;
-  }
-  .tbl-delete-btn:hover { color: var(--danger); }
-
-  /* MODAL */
-  .modal-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.7);
-    z-index: 100;
-    align-items: flex-start;
-    justify-content: center;
-    padding-top: 48px;
-    overflow-y: auto;
-  }
-
-  .modal-overlay.open { display: flex; }
-
-  .modal {
-    background: var(--bg-primary);
-    border: 1px solid var(--border);
-    width: 100%;
-    max-width: 560px;
-    padding: 32px;
-    margin-bottom: 48px;
-  }
-
-  .modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 24px;
-  }
-
-  .modal-title {
-    font-size: 13px;
-    color: var(--text-secondary);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-  }
-
-  .modal-close {
-    background: none;
-    border: none;
-    color: var(--text-muted);
-    font-size: 18px;
-    cursor: pointer;
-    font-family: inherit;
-    line-height: 1;
-    transition: color 150ms ease;
-  }
-  .modal-close:hover { color: var(--text-primary); }
-
-  /* SEARCHABLE SELECT */
-  .searchable-select {
-    position: relative;
-  }
-
-  .searchable-select input {
-    width: 100%;
-  }
-
-  .ss-dropdown {
-    display: none;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    background: var(--bg-elevated);
-    border: 1px solid var(--border);
-    border-top: none;
-    max-height: 200px;
-    overflow-y: auto;
-    z-index: 50;
-  }
-
-  .ss-dropdown.open { display: block; }
-
-  .ss-option {
-    padding: 8px 12px;
-    font-size: 13px;
-    color: var(--text-primary);
-    cursor: pointer;
-    transition: background 150ms ease;
-  }
-
-  .ss-option:hover { background: var(--bg-tertiary); }
-  .ss-option.selected { color: var(--accent); }
-
-  /* LOADING */
-  #loading {
-    position: fixed;
-    inset: 0;
-    background: var(--bg-primary);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 13px;
-    color: var(--text-muted);
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    z-index: 200;
-  }
+/* ── LOADING ─────────────────────────────────────────────────── */
+#loading {
+  position: fixed;
+  inset: 0;
+  background: var(--bg-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: var(--text-muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  z-index: 200;
+}
 </style>
 </head>
 <body>
@@ -501,25 +479,34 @@
     <span class="nav-item" data-view="add-node">Add Node</span>
     <span class="nav-item" data-view="add-edge">Add Edge</span>
     <span class="nav-item" data-view="table">Table</span>
+    <span class="nav-spacer"></span>
+    <button id="theme-toggle">Light Mode</button>
   </nav>
 
-  <!-- GRAPH VIEW -->
+  <!-- ── GRAPH ───────────────────────────────────────────────── -->
   <div id="view-graph" class="view active">
     <div id="graph-canvas"></div>
+
     <div id="graph-controls">
       <div class="ctrl-group">
         <button class="ctrl-btn" id="btn-fit">Fit</button>
-        <button class="ctrl-btn" id="btn-physics">Physics: On</button>
+        <button class="ctrl-btn" id="btn-expand-all">Expand All</button>
       </div>
       <div class="ctrl-group">
-        <span class="layer-filter-label">Layer</span>
-        <button class="ctrl-btn active" data-layer="all">All</button>
-        <button class="ctrl-btn" data-layer="1">1</button>
-        <button class="ctrl-btn" data-layer="2">2</button>
-        <button class="ctrl-btn" data-layer="3">3</button>
-        <button class="ctrl-btn" data-layer="4">4</button>
+        <span class="ctrl-label">Layers</span>
+        <button class="ctrl-btn active" data-layer-toggle="1">L1</button>
+        <button class="ctrl-btn active" data-layer-toggle="2">L2</button>
+        <button class="ctrl-btn active" data-layer-toggle="3">L3</button>
+        <button class="ctrl-btn active" data-layer-toggle="4">L4</button>
+        <button class="ctrl-btn active" data-layer-toggle="5">L5</button>
+      </div>
+      <div class="ctrl-group" style="margin-top:4px">
+        <span class="ctrl-label" style="font-size:10px;color:var(--text-muted)">Click node to expand/collapse</span>
       </div>
     </div>
+
+    <div class="layer-legend" id="layer-legend"></div>
+
     <div id="graph-sidebar">
       <button class="sidebar-close" id="sidebar-close">&#x2715;</button>
       <div class="sidebar-title" id="sidebar-label"></div>
@@ -527,7 +514,7 @@
     </div>
   </div>
 
-  <!-- ADD NODE VIEW -->
+  <!-- ── ADD NODE ────────────────────────────────────────────── -->
   <div id="view-add-node" class="view">
     <div class="form-wrap">
       <div class="form-section-header">Add Node</div>
@@ -537,7 +524,7 @@
         <div class="field"><label>Layer</label><input type="number" name="layer" min="1" max="10" required></div>
         <div class="field">
           <label>Parent ID</label>
-          <div class="searchable-select" id="ss-parent-id">
+          <div class="searchable-select">
             <input type="text" placeholder="Search nodes..." autocomplete="off" id="ss-parent-input">
             <input type="hidden" name="parent_id" id="ss-parent-value">
             <div class="ss-dropdown" id="ss-parent-dropdown"></div>
@@ -545,33 +532,13 @@
         </div>
         <div class="field">
           <label>Relationship to Parent</label>
-          <select name="parent_relationship_type">
-            <option value="legal-hypernym">legal-hypernym</option>
-            <option value="legal-hyponym">legal-hyponym</option>
-            <option value="element-of">element-of</option>
-            <option value="defined-as">defined-as</option>
-            <option value="establishes">establishes</option>
-            <option value="applies">applies</option>
-            <option value="modifies">modifies</option>
-            <option value="overrules">overrules</option>
-            <option value="distinguishes">distinguishes</option>
-            <option value="requires">requires</option>
-            <option value="triggers">triggers</option>
-            <option value="bars">bars</option>
-            <option value="conflicts-with">conflicts-with</option>
-            <option value="exception-to">exception-to</option>
-            <option value="proven-by">proven-by</option>
-            <option value="rebutted-by">rebutted-by</option>
-            <option value="inferred-from">inferred-from</option>
-            <option value="entitles-to">entitles-to</option>
-            <option value="limits">limits</option>
-          </select>
+          <select name="parent_relationship_type" id="sel-parent-rel"></select>
         </div>
-        <div class="field"><label>Definition</label><textarea name="definition" placeholder="Source-cited legal definition"></textarea></div>
-        <div class="field"><label>Citation</label><input type="text" name="citation" placeholder="e.g. Restatement (Second) of Contracts § 90"></div>
+        <div class="field"><label>Definition</label><textarea name="definition"></textarea></div>
+        <div class="field"><label>Citation</label><input type="text" name="citation"></div>
         <div class="field">
           <label>Authority Level</label>
-          <select name="authority_level">
+          <select name="authority_level" id="sel-authority">
             <option value="">-- select --</option>
             <option value="constitutional">constitutional</option>
             <option value="statutory">statutory</option>
@@ -579,9 +546,9 @@
             <option value="contractual">contractual</option>
           </select>
         </div>
-        <div class="field"><label>Jurisdiction</label><input type="text" name="jurisdiction" placeholder="e.g. federal, majority, UCC"></div>
-        <div class="field"><label>Valid From (year)</label><input type="number" name="temporal_valid_from" placeholder="e.g. 1932"></div>
-        <div class="field"><label>Valid To (year)</label><input type="number" name="temporal_valid_to" placeholder="Leave blank if current"></div>
+        <div class="field"><label>Jurisdiction</label><input type="text" name="jurisdiction" placeholder="e.g. federal, majority"></div>
+        <div class="field"><label>Valid From (year)</label><input type="number" name="temporal_valid_from"></div>
+        <div class="field"><label>Valid To (year)</label><input type="number" name="temporal_valid_to"></div>
         <div class="field"><label>Notes</label><textarea name="notes"></textarea></div>
         <button type="submit" class="submit-btn" id="btn-add-node">Add Node</button>
         <div class="form-status" id="status-add-node"></div>
@@ -589,7 +556,7 @@
     </div>
   </div>
 
-  <!-- ADD EDGE VIEW -->
+  <!-- ── ADD EDGE ────────────────────────────────────────────── -->
   <div id="view-add-edge" class="view">
     <div class="form-wrap">
       <div class="form-section-header">Add Edge</div>
@@ -597,46 +564,26 @@
         <div class="field"><label>Edge ID</label><input type="text" name="id" placeholder="e.g. contract_requires_consideration" required></div>
         <div class="field">
           <label>From Node</label>
-          <div class="searchable-select" id="ss-from-id">
+          <div class="searchable-select">
             <input type="text" placeholder="Search nodes..." autocomplete="off" id="ss-from-input">
-            <input type="hidden" name="from_id" id="ss-from-value" required>
+            <input type="hidden" name="from_id" id="ss-from-value">
             <div class="ss-dropdown" id="ss-from-dropdown"></div>
           </div>
         </div>
         <div class="field">
           <label>To Node</label>
-          <div class="searchable-select" id="ss-to-id">
+          <div class="searchable-select">
             <input type="text" placeholder="Search nodes..." autocomplete="off" id="ss-to-input">
-            <input type="hidden" name="to_id" id="ss-to-value" required>
+            <input type="hidden" name="to_id" id="ss-to-value">
             <div class="ss-dropdown" id="ss-to-dropdown"></div>
           </div>
         </div>
         <div class="field">
           <label>Relationship Type</label>
-          <select name="relationship_type">
-            <option value="legal-hypernym">legal-hypernym</option>
-            <option value="legal-hyponym">legal-hyponym</option>
-            <option value="element-of">element-of</option>
-            <option value="defined-as">defined-as</option>
-            <option value="establishes">establishes</option>
-            <option value="applies">applies</option>
-            <option value="modifies">modifies</option>
-            <option value="overrules">overrules</option>
-            <option value="distinguishes">distinguishes</option>
-            <option value="requires">requires</option>
-            <option value="triggers">triggers</option>
-            <option value="bars">bars</option>
-            <option value="conflicts-with">conflicts-with</option>
-            <option value="exception-to">exception-to</option>
-            <option value="proven-by">proven-by</option>
-            <option value="rebutted-by">rebutted-by</option>
-            <option value="inferred-from">inferred-from</option>
-            <option value="entitles-to">entitles-to</option>
-            <option value="limits">limits</option>
-          </select>
+          <select name="relationship_type" id="sel-edge-rel"></select>
         </div>
-        <div class="field"><label>Citation</label><input type="text" name="citation" placeholder="Source for this relationship"></div>
-        <div class="field"><label>Jurisdiction</label><input type="text" name="jurisdiction" placeholder="e.g. federal, majority"></div>
+        <div class="field"><label>Citation</label><input type="text" name="citation"></div>
+        <div class="field"><label>Jurisdiction</label><input type="text" name="jurisdiction"></div>
         <div class="field">
           <label>Strength</label>
           <select name="strength">
@@ -644,8 +591,8 @@
             <option value="rebuttable">rebuttable</option>
           </select>
         </div>
-        <div class="field"><label>Valid From (year)</label><input type="number" name="temporal_valid_from" placeholder="e.g. 1932"></div>
-        <div class="field"><label>Valid To (year)</label><input type="number" name="temporal_valid_to" placeholder="Leave blank if current"></div>
+        <div class="field"><label>Valid From (year)</label><input type="number" name="temporal_valid_from"></div>
+        <div class="field"><label>Valid To (year)</label><input type="number" name="temporal_valid_to"></div>
         <div class="field"><label>Notes</label><textarea name="notes"></textarea></div>
         <button type="submit" class="submit-btn" id="btn-add-edge">Add Edge</button>
         <div class="form-status" id="status-add-edge"></div>
@@ -653,7 +600,7 @@
     </div>
   </div>
 
-  <!-- TABLE VIEW -->
+  <!-- ── TABLE ───────────────────────────────────────────────── -->
   <div id="view-table" class="view">
     <div class="table-header">
       <button class="subtab-btn active" data-subtab="nodes">Nodes</button>
@@ -666,7 +613,7 @@
   </div>
 </div>
 
-<!-- EDIT MODAL -->
+<!-- ── EDIT MODAL ──────────────────────────────────────────────── -->
 <div class="modal-overlay" id="edit-modal">
   <div class="modal">
     <div class="modal-header">
@@ -686,16 +633,27 @@ const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby7C1vBH3OqQZVM
 
 const NODE_FIELDS = ['id','label','layer','parent_id','definition','citation','authority_level','jurisdiction','temporal_valid_from','temporal_valid_to','notes'];
 const EDGE_FIELDS = ['id','from_id','to_id','relationship_type','citation','jurisdiction','strength','temporal_valid_from','temporal_valid_to','notes'];
-const RELATIONSHIP_TYPES = ['legal-hypernym','legal-hyponym','element-of','defined-as','establishes','applies','modifies','overrules','distinguishes','requires','triggers','bars','conflicts-with','exception-to','proven-by','rebutted-by','inferred-from','entitles-to','limits'];
-const AUTHORITY_LEVELS = ['constitutional','statutory','common_law','contractual'];
-const LAYER_COLORS = { 1: '#4a90d9', 2: '#5dade2', 3: '#76d7c4', 4: '#a9cce3' };
+const REL_TYPES = ['legal-hypernym','legal-hyponym','element-of','defined-as','establishes','applies','modifies','overrules','distinguishes','requires','triggers','bars','conflicts-with','exception-to','proven-by','rebutted-by','inferred-from','entitles-to','limits'];
+const AUTH_LEVELS = ['constitutional','statutory','common_law','contractual'];
 
+// Populate relationship dropdowns
+['sel-parent-rel','sel-edge-rel'].forEach(id => {
+  const sel = document.getElementById(id);
+  REL_TYPES.forEach(r => {
+    const o = document.createElement('option');
+    o.value = r; o.textContent = r;
+    if (r === 'legal-hypernym') o.selected = true;
+    sel.appendChild(o);
+  });
+});
+
+// ── STATE ──────────────────────────────────────────────────────
 let state = { nodes: [], edges: [] };
 let network = null;
-let physicsOn = true;
-let activeLayerFilter = 'all';
+let collapsedNodes = new Set();
+let hiddenLayers = new Set();
 
-// ---- API ----
+// ── API ────────────────────────────────────────────────────────
 async function apiGet(action) {
   const res = await fetch(`${APPS_SCRIPT_URL}?action=${action}`);
   return res.json();
@@ -708,100 +666,171 @@ async function apiPost(body) {
     body: JSON.stringify(body),
     redirect: 'follow'
   });
-  return res.json();
+  const text = await res.text();
+  try { return JSON.parse(text); }
+  catch { return { success: false, error: text.slice(0, 100) }; }
 }
 
-// ---- LOAD DATA ----
 async function loadAll() {
   const data = await apiGet('getAll');
-  state.nodes = data.nodes || [];
+  state.nodes = (data.nodes || []).map(n => ({ ...n, layer: parseInt(n.layer) || 1 }));
   state.edges = data.edges || [];
 }
 
-// ---- GRAPH ----
+// ── GRAPH ──────────────────────────────────────────────────────
+function isDark() { return document.documentElement.getAttribute('data-theme') !== 'light'; }
+
+function layerColor(layer) {
+  const key = `--node-l${layer}`;
+  return getComputedStyle(document.documentElement).getPropertyValue(key).trim() || '#888';
+}
+
+function isNodeHidden(nodeId, memo = {}) {
+  if (nodeId in memo) return memo[nodeId];
+  const node = state.nodes.find(n => n.id === nodeId);
+  if (!node) { memo[nodeId] = true; return true; }
+  if (!node.parent_id) { memo[nodeId] = false; return false; }
+
+  const hidden =
+    hiddenLayers.has(String(node.layer)) ||
+    collapsedNodes.has(node.parent_id) ||
+    isNodeHidden(node.parent_id, memo);
+
+  memo[nodeId] = hidden;
+  return hidden;
+}
+
+function hasChildren(nodeId) {
+  return state.edges.some(e => e.from_id === nodeId);
+}
+
 function buildGraph() {
   const canvas = document.getElementById('graph-canvas');
-  const layerSizes = { 1: 28, 2: 20, 3: 14, 4: 10 };
+  const memo = {};
 
-  const filtered = activeLayerFilter === 'all'
-    ? state.nodes
-    : state.nodes.filter(n => String(n.layer) === activeLayerFilter);
+  const dark = isDark();
+  const fontColor = dark ? '#e8e8e8' : '#1a1a1a';
+  const edgeColor = dark ? '#2e2e2e' : '#cccccc';
+  const collapsedBg = dark ? '#1c1c1c' : '#dddddd';
 
-  const filteredIds = new Set(filtered.map(n => n.id));
+  const visibleNodes = state.nodes.filter(n => !isNodeHidden(n.id, memo));
 
-  const visNodes = new vis.DataSet(filtered.map(n => {
-    const layer = parseInt(n.layer) || 4;
+  const visNodes = new vis.DataSet(visibleNodes.map(n => {
+    const isCollapsed = collapsedNodes.has(n.id);
+    const hasKids = hasChildren(n.id);
+    const color = layerColor(n.layer);
+    const size = [28, 20, 15, 11, 9][n.layer - 1] || 9;
+
     return {
       id: n.id,
-      label: n.label,
-      color: { background: LAYER_COLORS[layer] || LAYER_COLORS[4], border: 'transparent', highlight: { background: LAYER_COLORS[layer] || LAYER_COLORS[4], border: '#4a90d9' } },
-      font: { color: '#e8e8e8', size: 13 },
-      size: layerSizes[layer] || 10,
-      borderWidth: 0,
-      borderWidthSelected: 2
+      label: n.label + (isCollapsed && hasKids ? '  [+]' : ''),
+      level: n.layer - 1,
+      color: {
+        background: isCollapsed ? collapsedBg : color,
+        border: isCollapsed ? color : 'transparent',
+        highlight: { background: color, border: '#4a90d9' },
+        hover: { background: color, border: '#4a90d9' }
+      },
+      font: { color: fontColor, size: 12, face: 'Inter' },
+      size,
+      borderWidth: isCollapsed ? 2 : 0,
+      borderWidthSelected: 2,
+      shape: 'dot',
+      title: hasKids ? (isCollapsed ? 'Click to expand' : 'Click to collapse') : 'Click for details'
     };
   }));
 
   const visEdges = new vis.DataSet(
     state.edges
-      .filter(e => filteredIds.has(e.from_id) && filteredIds.has(e.to_id))
+      .filter(e => !isNodeHidden(e.from_id, memo) && !isNodeHidden(e.to_id, memo) && !collapsedNodes.has(e.from_id))
       .map(e => ({
         id: e.id,
         from: e.from_id,
         to: e.to_id,
-        color: { color: '#2a2a2a', opacity: 0.8 },
+        color: { color: edgeColor, highlight: edgeColor, hover: edgeColor },
         width: 1,
-        arrows: { to: { enabled: true, scaleFactor: 0.5 } },
-        title: e.relationship_type,
-        font: { color: '#888888', size: 11, background: 'none' },
-        smooth: { type: 'dynamic' }
+        arrows: { to: { enabled: true, scaleFactor: 0.35, type: 'arrow' } },
+        smooth: { type: 'cubicBezier', forceDirection: 'vertical', roundness: 0.35 },
+        title: e.relationship_type
       }))
   );
 
   const options = {
-    physics: {
-      enabled: physicsOn,
-      hierarchicalRepulsion: { nodeDistance: 120 },
-      stabilization: { iterations: 200 }
+    layout: {
+      hierarchical: {
+        enabled: true,
+        direction: 'UD',
+        sortMethod: 'directed',
+        levelSeparation: 110,
+        nodeSpacing: 160,
+        treeSpacing: 280,
+        blockShifting: true,
+        edgeMinimization: true,
+        parentCentralization: true,
+      }
     },
+    physics: { enabled: false },
     interaction: {
       hover: true,
-      tooltipDelay: 300,
+      tooltipDelay: 200,
+      dragNodes: false,
+      dragView: true,
+      zoomView: true,
+      selectConnectedEdges: false,
       navigationButtons: false,
-      keyboard: false
-    },
-    layout: { improvedLayout: true }
+    }
   };
 
   if (network) network.destroy();
   network = new vis.Network(canvas, { nodes: visNodes, edges: visEdges }, options);
 
-  network.on('selectNode', params => {
-    if (params.nodes.length) openSidebar(params.nodes[0]);
+  network.on('click', params => {
+    if (!params.nodes.length) { closeSidebar(); return; }
+    const nodeId = params.nodes[0];
+
+    if (hasChildren(nodeId)) {
+      if (collapsedNodes.has(nodeId)) collapsedNodes.delete(nodeId);
+      else collapsedNodes.add(nodeId);
+      buildGraph();
+    } else {
+      openSidebar(nodeId);
+    }
   });
 
-  network.on('deselectNode', () => closeSidebar());
+  network.on('stabilized', () => network.fit({ animation: { duration: 400, easingFunction: 'easeInOutQuad' } }));
+
+  renderLegend();
+}
+
+function renderLegend() {
+  const layers = [...new Set(state.nodes.map(n => n.layer))].sort();
+  const labels = { 1: 'Root', 2: 'Domain', 3: 'Subdomain', 4: 'Doctrine / Crime / Defense', 5: 'L5' };
+  const legend = document.getElementById('layer-legend');
+  legend.innerHTML = layers.map(l => `
+    <div class="legend-item">
+      <div class="legend-dot" style="background:${layerColor(l)}"></div>
+      <span>L${l} — ${labels[l] || 'Layer ' + l}</span>
+    </div>
+  `).join('');
 }
 
 function openSidebar(nodeId) {
   const node = state.nodes.find(n => n.id === nodeId);
   if (!node) return;
-  const sidebar = document.getElementById('graph-sidebar');
   document.getElementById('sidebar-label').textContent = node.label;
-  const fields = document.getElementById('sidebar-fields');
   const rows = [
     ['ID', node.id], ['Layer', node.layer], ['Parent', node.parent_id || '--'],
     ['Authority', node.authority_level || '--'], ['Jurisdiction', node.jurisdiction || '--'],
     ['Valid From', node.temporal_valid_from || '--'], ['Valid To', node.temporal_valid_to || '--'],
     ['Citation', node.citation || '--'], ['Definition', node.definition || '--'], ['Notes', node.notes || '--']
   ];
-  fields.innerHTML = rows.map(([k, v]) => `
+  document.getElementById('sidebar-fields').innerHTML = rows.map(([k, v]) => `
     <div class="meta-pair">
       <div class="meta-label">${k}</div>
-      <div class="meta-value${!v || v === '--' ? ' empty' : ''}">${v || '--'}</div>
+      <div class="meta-value${(!v || v === '--') ? ' empty' : ''}">${v || '--'}</div>
     </div>
   `).join('');
-  sidebar.classList.add('open');
+  document.getElementById('graph-sidebar').classList.add('open');
 }
 
 function closeSidebar() {
@@ -809,30 +838,44 @@ function closeSidebar() {
   if (network) network.unselectAll();
 }
 
-// ---- GRAPH CONTROLS ----
+// ── GRAPH CONTROLS ─────────────────────────────────────────────
 document.getElementById('btn-fit').addEventListener('click', () => {
-  if (network) network.fit();
+  if (network) network.fit({ animation: { duration: 300, easingFunction: 'easeInOutQuad' } });
 });
 
-document.getElementById('btn-physics').addEventListener('click', function() {
-  physicsOn = !physicsOn;
-  this.textContent = `Physics: ${physicsOn ? 'On' : 'Off'}`;
-  this.classList.toggle('active', physicsOn);
-  if (network) network.setOptions({ physics: { enabled: physicsOn } });
+document.getElementById('btn-expand-all').addEventListener('click', () => {
+  collapsedNodes.clear();
+  buildGraph();
 });
 
 document.getElementById('sidebar-close').addEventListener('click', closeSidebar);
 
-document.querySelectorAll('[data-layer]').forEach(btn => {
+document.querySelectorAll('[data-layer-toggle]').forEach(btn => {
   btn.addEventListener('click', function() {
-    document.querySelectorAll('[data-layer]').forEach(b => b.classList.remove('active'));
-    this.classList.add('active');
-    activeLayerFilter = this.dataset.layer;
+    const layer = this.dataset.layerToggle;
+    if (hiddenLayers.has(layer)) {
+      hiddenLayers.delete(layer);
+      this.classList.add('active');
+      this.classList.remove('inactive');
+    } else {
+      hiddenLayers.add(layer);
+      this.classList.remove('active');
+      this.classList.add('inactive');
+    }
     buildGraph();
   });
 });
 
-// ---- NAV ----
+// ── THEME TOGGLE ───────────────────────────────────────────────
+document.getElementById('theme-toggle').addEventListener('click', function() {
+  const html = document.documentElement;
+  const isLight = html.getAttribute('data-theme') === 'light';
+  html.setAttribute('data-theme', isLight ? 'dark' : 'light');
+  this.textContent = isLight ? 'Light Mode' : 'Dark Mode';
+  buildGraph();
+});
+
+// ── NAV ────────────────────────────────────────────────────────
 document.querySelectorAll('.nav-item').forEach(item => {
   item.addEventListener('click', function() {
     document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
@@ -843,51 +886,38 @@ document.querySelectorAll('.nav-item').forEach(item => {
   });
 });
 
-// ---- SEARCHABLE SELECT ----
+// ── SEARCHABLE SELECT ──────────────────────────────────────────
 function initSearchableSelect(inputId, dropdownId, valueId, allowEmpty) {
   const input = document.getElementById(inputId);
   const dropdown = document.getElementById(dropdownId);
   const valueField = document.getElementById(valueId);
 
-  function renderOptions(filter) {
-    const q = filter.toLowerCase();
-    const opts = allowEmpty
-      ? [{ id: '', label: '-- none (root) --' }, ...state.nodes]
-      : state.nodes;
+  function render(filter) {
+    const q = (filter || '').toLowerCase();
+    const opts = allowEmpty ? [{ id: '', label: '-- none (root) --' }, ...state.nodes] : state.nodes;
     const matches = opts.filter(n =>
-      (n.label && n.label.toLowerCase().includes(q)) || (n.id && n.id.toLowerCase().includes(q))
-    ).slice(0, 50);
+      (n.label || '').toLowerCase().includes(q) || (n.id || '').toLowerCase().includes(q)
+    ).slice(0, 60);
     dropdown.innerHTML = matches.map(n =>
       `<div class="ss-option" data-id="${n.id}" data-label="${n.label || n.id}">${n.label || n.id} <span style="color:var(--text-muted);font-size:11px">${n.id}</span></div>`
     ).join('');
     dropdown.querySelectorAll('.ss-option').forEach(opt => {
       opt.addEventListener('click', () => {
         valueField.value = opt.dataset.id;
-        input.value = opt.dataset.label || opt.dataset.id;
+        input.value = opt.dataset.label;
         dropdown.classList.remove('open');
       });
     });
   }
 
-  input.addEventListener('focus', () => {
-    renderOptions(input.value);
-    dropdown.classList.add('open');
-  });
-
-  input.addEventListener('input', () => {
-    renderOptions(input.value);
-    dropdown.classList.add('open');
-    valueField.value = '';
-  });
-
+  input.addEventListener('focus', () => { render(input.value); dropdown.classList.add('open'); });
+  input.addEventListener('input', () => { render(input.value); dropdown.classList.add('open'); valueField.value = ''; });
   document.addEventListener('click', e => {
-    if (!input.contains(e.target) && !dropdown.contains(e.target)) {
-      dropdown.classList.remove('open');
-    }
+    if (!input.contains(e.target) && !dropdown.contains(e.target)) dropdown.classList.remove('open');
   });
 }
 
-// ---- ADD NODE FORM ----
+// ── STATUS ─────────────────────────────────────────────────────
 function setStatus(id, msg, type) {
   const el = document.getElementById(id);
   el.textContent = msg;
@@ -895,70 +925,56 @@ function setStatus(id, msg, type) {
   if (type === 'success') setTimeout(() => { el.textContent = ''; el.className = 'form-status'; }, 2000);
 }
 
+// ── ADD NODE ───────────────────────────────────────────────────
 document.getElementById('form-add-node').addEventListener('submit', async function(e) {
   e.preventDefault();
-  const fd = new FormData(this);
-  const data = Object.fromEntries(fd.entries());
+  const data = Object.fromEntries(new FormData(this).entries());
 
-  // client-side id uniqueness check
   if (state.nodes.find(n => n.id === data.id)) {
     setStatus('status-add-node', `ID "${data.id}" already exists.`, 'error');
     return;
   }
 
   const btn = document.getElementById('btn-add-node');
-  btn.textContent = 'Saving...';
-  btn.disabled = true;
+  btn.textContent = 'Saving...'; btn.disabled = true;
 
   const parentRelType = data.parent_relationship_type;
   delete data.parent_relationship_type;
 
-  const nodePayload = { ...data };
-  const result = await apiPost({ action: 'addNode', data: nodePayload });
+  const result = await apiPost({ action: 'addNode', data });
 
   if (!result.success) {
-    setStatus('status-add-node', result.error || 'Error saving node.', 'error');
-    btn.textContent = 'Add Node';
-    btn.disabled = false;
+    setStatus('status-add-node', result.error || 'Error.', 'error');
+    btn.textContent = 'Add Node'; btn.disabled = false;
     return;
   }
 
-  // add edge to parent if parent selected
   if (data.parent_id) {
-    const edgeData = {
+    await apiPost({ action: 'addEdge', data: {
       id: `edge_${data.parent_id}_${data.id}`,
-      from_id: data.parent_id,
-      to_id: data.id,
+      from_id: data.parent_id, to_id: data.id,
       relationship_type: parentRelType,
-      citation: '',
-      jurisdiction: data.jurisdiction || '',
-      strength: 'absolute',
-      temporal_valid_from: '',
-      temporal_valid_to: '',
-      notes: ''
-    };
-    await apiPost({ action: 'addEdge', data: edgeData });
+      citation: '', jurisdiction: data.jurisdiction || '',
+      strength: 'absolute', temporal_valid_from: '', temporal_valid_to: '', notes: ''
+    }});
   }
 
-  state.nodes.push(nodePayload);
+  data.layer = parseInt(data.layer) || 1;
+  state.nodes.push(data);
   buildGraph();
   setStatus('status-add-node', 'Saved.', 'success');
   this.reset();
   document.getElementById('ss-parent-value').value = '';
   document.getElementById('ss-parent-input').value = '';
-  btn.textContent = 'Add Node';
-  btn.disabled = false;
+  btn.textContent = 'Add Node'; btn.disabled = false;
 });
 
-// ---- ADD EDGE FORM ----
+// ── ADD EDGE ───────────────────────────────────────────────────
 document.getElementById('form-add-edge').addEventListener('submit', async function(e) {
   e.preventDefault();
-  const fd = new FormData(this);
-  const data = Object.fromEntries(fd.entries());
-
+  const data = Object.fromEntries(new FormData(this).entries());
   const btn = document.getElementById('btn-add-edge');
-  btn.textContent = 'Saving...';
-  btn.disabled = true;
+  btn.textContent = 'Saving...'; btn.disabled = true;
 
   const result = await apiPost({ action: 'addEdge', data });
 
@@ -970,27 +986,22 @@ document.getElementById('form-add-edge').addEventListener('submit', async functi
     ['ss-from-value','ss-to-value'].forEach(id => document.getElementById(id).value = '');
     ['ss-from-input','ss-to-input'].forEach(id => document.getElementById(id).value = '');
   } else {
-    setStatus('status-add-edge', result.error || 'Error saving edge.', 'error');
+    setStatus('status-add-edge', result.error || 'Error.', 'error');
   }
 
-  btn.textContent = 'Add Edge';
-  btn.disabled = false;
+  btn.textContent = 'Add Edge'; btn.disabled = false;
 });
 
-// ---- TABLE VIEW ----
-function renderTables() {
-  renderNodeTable();
-  renderEdgeTable();
-}
+// ── TABLE ──────────────────────────────────────────────────────
+function renderTables() { renderNodeTable(); renderEdgeTable(); }
 
 function renderNodeTable() {
   const cols = NODE_FIELDS;
-  const wrap = document.getElementById('table-nodes-wrap');
-  wrap.innerHTML = `<table>
+  document.getElementById('table-nodes-wrap').innerHTML = `<table>
     <thead><tr>${cols.map(c => `<th>${c}</th>`).join('')}<th></th></tr></thead>
     <tbody>${state.nodes.map(n => `
       <tr>
-        ${cols.map(c => `<td class="${['definition','citation','notes'].includes(c) ? 'truncate' : ''}">${n[c] !== undefined ? n[c] : ''}</td>`).join('')}
+        ${cols.map(c => `<td class="${['definition','citation','notes'].includes(c)?'truncate':''}">${n[c]??''}</td>`).join('')}
         <td style="white-space:nowrap">
           <button class="tbl-edit-btn" onclick="openEditModal('node','${n.id}')">Edit</button>
           <button class="tbl-delete-btn" onclick="deleteRecord('node','${n.id}')">Delete</button>
@@ -1002,12 +1013,11 @@ function renderNodeTable() {
 
 function renderEdgeTable() {
   const cols = EDGE_FIELDS;
-  const wrap = document.getElementById('table-edges-wrap');
-  wrap.innerHTML = `<table>
+  document.getElementById('table-edges-wrap').innerHTML = `<table>
     <thead><tr>${cols.map(c => `<th>${c}</th>`).join('')}<th></th></tr></thead>
     <tbody>${state.edges.map(e => `
       <tr>
-        ${cols.map(c => `<td class="${['citation','notes'].includes(c) ? 'truncate' : ''}">${e[c] !== undefined ? e[c] : ''}</td>`).join('')}
+        ${cols.map(c => `<td class="${['citation','notes'].includes(c)?'truncate':''}">${e[c]??''}</td>`).join('')}
         <td style="white-space:nowrap">
           <button class="tbl-edit-btn" onclick="openEditModal('edge','${e.id}')">Edit</button>
           <button class="tbl-delete-btn" onclick="deleteRecord('edge','${e.id}')">Delete</button>
@@ -1027,13 +1037,11 @@ document.querySelectorAll('.subtab-btn').forEach(btn => {
   });
 });
 
-// ---- EDIT MODAL ----
-let editingType = null;
-let editingId = null;
+// ── EDIT MODAL ─────────────────────────────────────────────────
+let editingType = null, editingId = null;
 
 function openEditModal(type, id) {
-  editingType = type;
-  editingId = id;
+  editingType = type; editingId = id;
   const record = type === 'node'
     ? state.nodes.find(n => n.id === id)
     : state.edges.find(e => e.id === id);
@@ -1041,22 +1049,13 @@ function openEditModal(type, id) {
 
   document.getElementById('modal-title').textContent = `Edit ${type}`;
   const fields = type === 'node' ? NODE_FIELDS : EDGE_FIELDS;
-  const container = document.getElementById('modal-fields');
 
-  container.innerHTML = fields.map(f => {
-    const val = record[f] !== undefined ? record[f] : '';
-    if (f === 'authority_level') {
-      return `<div class="field"><label>${f}</label><select name="${f}">${AUTHORITY_LEVELS.map(a => `<option value="${a}"${a===val?' selected':''}>${a}</option>`).join('')}</select></div>`;
-    }
-    if (f === 'relationship_type' || f === 'parent_relationship_type') {
-      return `<div class="field"><label>${f}</label><select name="${f}">${RELATIONSHIP_TYPES.map(r => `<option value="${r}"${r===val?' selected':''}>${r}</option>`).join('')}</select></div>`;
-    }
-    if (f === 'strength') {
-      return `<div class="field"><label>${f}</label><select name="${f}"><option${val==='absolute'?' selected':''}>absolute</option><option${val==='rebuttable'?' selected':''}>rebuttable</option></select></div>`;
-    }
-    if (['definition','notes'].includes(f)) {
-      return `<div class="field"><label>${f}</label><textarea name="${f}">${val}</textarea></div>`;
-    }
+  document.getElementById('modal-fields').innerHTML = fields.map(f => {
+    const val = record[f] ?? '';
+    if (f === 'authority_level') return `<div class="field"><label>${f}</label><select name="${f}">${AUTH_LEVELS.map(a => `<option value="${a}"${a==val?' selected':''}>${a}</option>`).join('')}</select></div>`;
+    if (f === 'relationship_type') return `<div class="field"><label>${f}</label><select name="${f}">${REL_TYPES.map(r => `<option value="${r}"${r==val?' selected':''}>${r}</option>`).join('')}</select></div>`;
+    if (f === 'strength') return `<div class="field"><label>${f}</label><select name="${f}"><option${val==='absolute'?' selected':''} value="absolute">absolute</option><option${val==='rebuttable'?' selected':''} value="rebuttable">rebuttable</option></select></div>`;
+    if (['definition','notes'].includes(f)) return `<div class="field"><label>${f}</label><textarea name="${f}">${val}</textarea></div>`;
     return `<div class="field"><label>${f}</label><input type="text" name="${f}" value="${String(val).replace(/"/g,'&quot;')}"></div>`;
   }).join('');
 
@@ -1064,29 +1063,22 @@ function openEditModal(type, id) {
   document.getElementById('status-edit').textContent = '';
 }
 
-document.getElementById('modal-close').addEventListener('click', () => {
-  document.getElementById('edit-modal').classList.remove('open');
-});
-
-document.getElementById('edit-modal').addEventListener('click', function(e) {
-  if (e.target === this) this.classList.remove('open');
-});
+document.getElementById('modal-close').addEventListener('click', () => document.getElementById('edit-modal').classList.remove('open'));
+document.getElementById('edit-modal').addEventListener('click', function(e) { if (e.target === this) this.classList.remove('open'); });
 
 document.getElementById('form-edit').addEventListener('submit', async function(e) {
   e.preventDefault();
-  const fd = new FormData(this);
-  const data = Object.fromEntries(fd.entries());
+  const data = Object.fromEntries(new FormData(this).entries());
   const action = editingType === 'node' ? 'updateNode' : 'updateEdge';
   const btn = document.getElementById('btn-modal-save');
-  btn.textContent = 'Saving...';
-  btn.disabled = true;
+  btn.textContent = 'Saving...'; btn.disabled = true;
 
   const result = await apiPost({ action, data });
 
   if (result.success) {
     if (editingType === 'node') {
       const idx = state.nodes.findIndex(n => n.id === editingId);
-      if (idx !== -1) state.nodes[idx] = data;
+      if (idx !== -1) state.nodes[idx] = { ...data, layer: parseInt(data.layer) || 1 };
     } else {
       const idx = state.edges.findIndex(e => e.id === editingId);
       if (idx !== -1) state.edges[idx] = data;
@@ -1096,11 +1088,10 @@ document.getElementById('form-edit').addEventListener('submit', async function(e
     setStatus('status-edit', 'Saved.', 'success');
     setTimeout(() => document.getElementById('edit-modal').classList.remove('open'), 800);
   } else {
-    setStatus('status-edit', result.error || 'Error saving.', 'error');
+    setStatus('status-edit', result.error || 'Error.', 'error');
   }
 
-  btn.textContent = 'Save';
-  btn.disabled = false;
+  btn.textContent = 'Save'; btn.disabled = false;
 });
 
 async function deleteRecord(type, id) {
@@ -1117,7 +1108,7 @@ async function deleteRecord(type, id) {
   }
 }
 
-// ---- INIT ----
+// ── INIT ───────────────────────────────────────────────────────
 async function init() {
   await loadAll();
   document.getElementById('loading').style.display = 'none';
@@ -1128,7 +1119,7 @@ async function init() {
 }
 
 init().catch(err => {
-  document.getElementById('loading').textContent = 'Failed to load. Check APPS_SCRIPT_URL.';
+  document.getElementById('loading').textContent = 'Failed to load. Check console.';
   console.error(err);
 });
 </script>

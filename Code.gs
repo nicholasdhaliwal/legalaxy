@@ -16,9 +16,8 @@ function sheetToObjects(sheet) {
 }
 
 function respond(data) {
-  var output = ContentService.createTextOutput(JSON.stringify(data))
+  return ContentService.createTextOutput(JSON.stringify(data))
     .setMimeType(ContentService.MimeType.JSON);
-  return output;
 }
 
 function appendLog(action, nodeOrEdge, id, userNote) {
@@ -50,6 +49,15 @@ function doGet(e) {
 function doPost(e) {
   var body = JSON.parse(e.postData.contents);
   var action = body.action;
+
+  if (action === 'clearData') {
+    var ns = getSheet('Nodes');
+    var es = getSheet('Edges');
+    if (ns.getLastRow() > 1) ns.deleteRows(2, ns.getLastRow() - 1);
+    if (es.getLastRow() > 1) es.deleteRows(2, es.getLastRow() - 1);
+    appendLog('clearData', 'all', '', '');
+    return respond({ success: true });
+  }
 
   if (action === 'addNode') {
     var sheet = getSheet('Nodes');
